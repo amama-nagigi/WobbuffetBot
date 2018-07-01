@@ -1,2 +1,3 @@
 # WobbuffetBot
-DiscordBod
+pythonの練習がてら、Discordの下らないボットを作ってみました。
+「ソーナノ」「ソーナンス」に関する言葉を誰かが発言すると応答を返します。

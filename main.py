@@ -37,7 +37,7 @@ async def on_message(message):
     await match(message, daijobu, 'ダイジョーブ博士', 'daijobu.jpg')
 
 async def match(message, regex, replyWord, replyImage):
-    m = regex.match(jaconv.hira2kata(jaconv.h2z(message.content)))
+    m = regex.search(jaconv.hira2kata(jaconv.h2z(message.content)))
     if m:
         await client.send_file(message.channel, 'img/' + replyImage)
         await client.send_message(message.channel, replyWord)

@@ -1,6 +1,12 @@
-# APIラッパと非同期I/Oモジュールの読み込み
+# モジュールの読み込み
 import discord
 import asyncio
+import configparser
+
+# コンフィグファイルの読み込み
+inifile = configparser.ConfigParser()
+inifile.read('./config.ini', 'UTF-8')
+token = inifile.get('settings', 'token')
 
 # クライアント接続オブジェクト
 client = discord.Client()
@@ -34,4 +40,4 @@ async def loop(message, array, replyWord, replyImage):
             await client.send_file(message.channel, 'img/' + replyImage)
             await client.send_message(message.channel, replyWord)
 
-client.run("token")
+client.run(token)

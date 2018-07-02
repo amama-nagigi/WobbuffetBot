@@ -2,6 +2,13 @@
 import discord
 import asyncio
 import configparser
+import re
+import jaconv
+
+# 正規表現の作成
+sonano = re.compile(r'ソ(ウ|ー+)ナノ')
+sonance = re.compile(r'ソ(ウ|ー+)ナン')
+daijobu = re.compile(r'(大|ダイ|デ(エ|ー)+)(丈|(ジョ(ウ?|ー*)))(夫|ブ)')
 
 # コンフィグファイルの読み込み
 inifile = configparser.ConfigParser()
@@ -10,11 +17,6 @@ token = inifile.get('settings', 'token')
 
 # クライアント接続オブジェクト
 client = discord.Client()
-
-# 配列宣言
-sonano = ['そうなの', 'そーなの', 'ソウナノ', 'ソーナノ', 'ｿｳﾅﾉ', 'ｿｰﾅﾉ']
-sonance = ['そうなん', 'そーなん', 'ソウナン', 'ソーナン', 'ｿｳﾅﾝ', 'ｿｰﾅﾝ']
-daijobu = ['大丈夫', 'だいじょうぶ', 'だいじょぶ', 'ダイジョブ', 'だいじょーぶ', 'ダイジョーブ', 'ﾀﾞｲｼﾞｮﾌﾞ', 'ﾀﾞｲｼﾞｮｳﾌﾞ', 'ﾀﾞｲｼﾞｮｰﾌﾞ']
 
 # 起動時の処理
 @client.event
@@ -30,14 +32,14 @@ async def on_message(message):
     if message.author.bot:
         return
 
-    await loop(message, sonano, 'ソーナノ', 'sonano.png')
-    await loop(message, sonance, 'ソーナンス', 'sonance.png')
-    await loop(message, daijobu, 'ダイジョーブ博士', 'daijobu.jpg')
+    await match(message, sonano, 'ソーナノ', 'sonano.png')
+    await match(message, sonance, 'ソーナンス', 'sonance.png')
+    await match(message, daijobu, 'ダイジョーブ博士', 'daijobu.jpg')
 
-async def loop(message, array, replyWord, replyImage):
-    for word in array:
-        if word in message.content:
-            await client.send_file(message.channel, 'img/' + replyImage)
-            await client.send_message(message.channel, replyWord)
+async def match(message, regex, replyWord, replyImage):
+    m = regex.match(jaconv.hira2kata(jaconv.h2z(message.content)))
+    if m:
+        await client.send_file(message.channel, 'img/' + replyImage)
+        await client.send_message(message.channel, replyWord)
 
 client.run(token)
